@@ -10,19 +10,23 @@ enum Piece {
     OFFBOARD 
 };
 
-int PieceVal[] = {
+const int PieceVal[] = {
     0,
     100, 325, 325, 550, 1000, 9999,
     100, 325, 325, 550, 1000, 9999,
     0
 };
 
-int PieceColor[] = {
+const int PieceColor[] = {
     BOTH,
     WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
     BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
     BOTH,
 };
 
+inline bool isValidPiece(int p) {
+    // Produces true if the piece is not EMPTY or OFFBOARD
+    return !(p == EMPTY || p == OFFBOARD);
+}
 
 #endif

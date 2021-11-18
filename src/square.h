@@ -2,7 +2,7 @@
 #define _SQUARE_H_
 #include <cassert>
 
-extern const int BOARD_SQ_NUM = 120;
+const int BOARD_SQ_NUM = 120;
 
 enum Square { 
     A1 = 21, B1, C1, D1, E1, F1, G1, H1,
@@ -19,7 +19,7 @@ enum File { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE
 
 enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
-int squareToFile(int square) {
+inline int squareToFile(int square) {
     if (A1 <= square && square <= H8) {
         switch (square % 10) {
           case 1: return FILE_A;
@@ -35,7 +35,7 @@ int squareToFile(int square) {
     return FILE_NONE;
 }
 
-int squareToRank(int square) {
+inline int squareToRank(int square) {
     if ( !(square % 10 == 0 || square % 10 == 9) ) {
         switch (square / 10) {
           case 2: return RANK_1; 
@@ -51,12 +51,17 @@ int squareToRank(int square) {
     return RANK_NONE;
 }
 
-int square120to64(int sq120) {
-    assert(!(squareToFile(sq120) == FILE_NONE || squareToRank(sq120) == RANK_NONE));
+inline bool isValidSquare(int sq120) {
+    // Produces true if the square is not on FILE_NONE and not on RANK_NONE
+    return !(squareToFile(sq120) == FILE_NONE || squareToRank(sq120) == RANK_NONE);
+}
+
+inline int square120to64(int sq120) {
+    assert(isValidSquare(sq120));
     return 8 * squareToRank(sq120) + squareToFile(sq120);
 }
 
-int square64to120(int sq64) {
+inline int square64to120(int sq64) {
     assert(0 <= sq64 && sq64 <= 63);
     if (sq64 < 8)  return A1 + sq64;
     if (sq64 < 16) return A2 + sq64 % 8;
@@ -67,6 +72,5 @@ int square64to120(int sq64) {
     if (sq64 < 56) return A7 + sq64 % 8;
     return A8 + sq64 % 8;
 }
-
 
 #endif
