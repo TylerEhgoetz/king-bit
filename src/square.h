@@ -51,8 +51,6 @@ int squareToRank(int square) {
     return RANK_NONE;
 }
 
-// TODO: square120to64(), square64to120()
-
 int square120to64(int sq120) {
     assert(!(squareToFile(sq120) == FILE_NONE || squareToRank(sq120) == RANK_NONE));
     return 8 * squareToRank(sq120) + squareToFile(sq120);
