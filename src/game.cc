@@ -9,5 +9,5 @@ void Game::removePiece(int square) {
 }
 
 void Game::setColour(int colour) {
-    // TODO: make it colours turn to play (have to set up main first)
+    // TODO: call position setColour once created
 }
