@@ -6,12 +6,11 @@
 #include "bitboard.h"
 
 class Position {
-  private:
-    // There is one Bitboard for each piece type, plus one extra for all pawns
-    Bitboard bbs[NUM_PIECES + 1];
-    Piece squareList[BOARD_SQ_NUM];
-
   public:
+    struct PieceList {
+      int count;
+      Square squares[MAX_ON_BOARD];
+    };
     // Default constructor initializes the squareList
     Position();
 
@@ -29,6 +28,12 @@ class Position {
 
     // Prints the pieces on each valid square
     friend std::ostream &operator<<(std::ostream &, const Position &);
+
+  private:
+    // There is one Bitboard for each piece type, plus one extra for all pawns
+    Bitboard bbs[NUM_PIECES + 1];
+    PieceList pieceList[NUM_PIECES];
+    Piece squareList[BOARD_SQ_NUM];
 };
 
 #endif
