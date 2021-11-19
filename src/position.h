@@ -3,11 +3,12 @@
 #include <iostream>
 #include "piece.h"
 #include "square.h"
-
-extern const int BOARD_SQ_NUM;
+#include "bitboard.h"
 
 class Position {
   private:
+    // There is one Bitboard for each piece type, plus one extra for all pawns
+    Bitboard bbs[NUM_PIECES + 1];
     Piece squareList[BOARD_SQ_NUM];
 
   public:

@@ -10,6 +10,8 @@ enum Piece {
     OFFBOARD 
 };
 
+const int NUM_PIECES = 13;
+
 const int PieceVal[] = {
     0,
     100, 325, 325, 550, 1000, 9999,
@@ -27,6 +29,10 @@ const int PieceColor[] = {
 inline bool isValidPiece(int p) {
     // Produces true if the piece is not EMPTY or OFFBOARD
     return !(p == EMPTY || p == OFFBOARD);
+}
+
+inline bool isPawn(int p) {
+    return p == wP || p == bP;
 }
 
 #endif
