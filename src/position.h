@@ -18,7 +18,7 @@ class Position {
     // placePiece puts the given piece on the given square
     // Requires: 
     //  * piece is not EMPTY or OFFBOARD
-    //  * square is a valid square on the chess board
+    //  * square is a valid EMPTY square on the chess board
     void placePiece(Piece, Square);
 
     // removePiece removes and returns the piece on the given square

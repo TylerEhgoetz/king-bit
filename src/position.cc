@@ -2,6 +2,20 @@
 #include <iomanip>
 #include "position.h"
 
+// Bitboard helper functions
+void placePieceOnBitboards(Bitboard *bbs, Piece p, int sq64) {
+    bbs[EMPTY].clear(sq64);
+    bbs[p].set(sq64);
+    if (isPawn(p)) bbs[NUM_PIECES].set(sq64);
+}
+
+void removePieceOnBitboards(Bitboard *bbs, Piece p, int sq64) {
+    bbs[EMPTY].set(sq64);
+    bbs[p].clear(sq64);
+    if (isPawn(p)) bbs[NUM_PIECES].clear(sq64);
+}
+
+// Position implementation
 Position::Position() {
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
         squareList[i] = (isValidSquare(i)) ? EMPTY : OFFBOARD;
@@ -12,11 +26,9 @@ Position::Position() {
 void Position::placePiece(Piece p, Square s) {
     assert(isValidPiece(p));
     assert(isValidSquare(s));
+    assert(squareList[s] == EMPTY);
     // Update bitboard
-    int sq64 = square120to64(s);
-    bbs[EMPTY].clear(sq64);
-    bbs[p].set(sq64);
-    if (isPawn(p)) bbs[NUM_PIECES].set(sq64);
+    placePieceOnBitboards(bbs, p, square120to64(s));
     // Update squarelist
     squareList[s] = p;
 }
@@ -26,10 +38,7 @@ Piece Position::removePiece(Square s) {
     Piece p = squareList[s];
     assert(isValidPiece(p));
     // Update bitboard
-    int sq64 = square120to64(s);
-    bbs[EMPTY].set(sq64);
-    bbs[p].clear(sq64);
-    if (isPawn(p)) bbs[NUM_PIECES].clear(sq64);
+    removePieceOnBitboards(bbs, p, square120to64(s));
     // Update squarelist
     squareList[s] = EMPTY;
     return p;
