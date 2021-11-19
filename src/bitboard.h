@@ -13,6 +13,7 @@ class Bitboard {
     // Basic operations
     void set(int bit);
     void clear(int bit);
+    int get(int bit) const;
     int count() const;
 
     // flip produces the complement of the current bitboard

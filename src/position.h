@@ -11,8 +11,12 @@ class Position {
       int count;
       Square squares[MAX_ON_BOARD];
     };
+
     // Default constructor initializes the squareList
     Position();
+
+    // Verifies that the bitboards, squarelist and piecelist are consistent with eachother
+    bool isConsistent();
 
     // placePiece puts the given piece on the given square
     // Requires: 

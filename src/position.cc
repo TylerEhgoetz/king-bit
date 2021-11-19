@@ -28,7 +28,7 @@ void removePieceToPieceList(Position::PieceList *pl, Piece p, int sq120) {
     // Get i to be the index of sq120 in pl[p].squares
     while (i < pl[p].count && pl[p].squares[i] != sq120) ++i;
     assert(pl[p].squares[i] == sq120);
-    while (pl[p].squares[i] != NO_SQ) pl[p].squares[i] = pl[p].squares[i+1];
+    for (; pl[p].squares[i] != NO_SQ; ++i) pl[p].squares[i] = pl[p].squares[i+1];
     pl[p].count--;
 }
 
@@ -45,6 +45,27 @@ Position::Position() {
     // Set square list to EMPTY and OFFBOARD
     for (int i = 0; i < BOARD_SQ_NUM; ++i) 
         squareList[i] = (isValidSquare(i)) ? EMPTY : OFFBOARD;
+}
+
+bool Position::isConsistent() {
+    for (int i = 0; i < BOARD_SQ_NUM; ++i) {
+        if (isValidSquare(i)) {
+            Piece p = squareList[i];
+            // Assert that the p bitboard has the square i set to 1
+            assert(bbs[p].get(square120to64(i)));
+            if (p != EMPTY) {
+                bool foundSquare = false;
+                for (int j = 0; j < pieceList[p].count; ++j) {
+                    if (pieceList[p].squares[j] == i) {
+                        foundSquare = true;
+                        break;
+                    }
+                }
+                // Assert that the p pieceList contains the square i in its squarelist
+                assert(foundSquare);
+            }
+        }
+    }
 }
 
 void Position::placePiece(Piece p, Square s) {
@@ -82,14 +103,16 @@ std::ostream &operator<<(std::ostream &out, const Position &p) {
     }
     out << std::endl;
     for (int i = 0; i < NUM_PIECES + 1; ++i) {
-        out << "Piece type " << i << ":" << std::endl;
-        if (0 < i && i < NUM_PIECES) {
-            out << "Count = " << p.pieceList[i].count << std::endl;
-            out << "Squares = ";
-            for (int j = 0; j < p.pieceList[i].count; ++j) out << p.pieceList[i].squares[j] << ", ";
+        if (p.bbs[i].count()) {
+            out << "Piece type " << i << ":" << std::endl;
+            if (0 < i && i < NUM_PIECES) {
+                out << "Count = " << p.pieceList[i].count << std::endl;
+                out << "Squares = ";
+                for (int j = 0; j < p.pieceList[i].count; ++j) out << p.pieceList[i].squares[j] << ", ";
+                out << std::endl;
+            }
+            out << p.bbs[i];
         }
-        out << std::endl;
-        out << p.bbs[i];
     }
     return out;
 }

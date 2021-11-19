@@ -6,6 +6,8 @@ void Bitboard::set(int bit) { bits[bit] = 1; }
 
 void Bitboard::clear(int bit) { bits[bit] = 0; }
 
+int Bitboard::get(int bit) const { return bits.test(bit); }
+
 int Bitboard::count() const { return bits.count(); }
 
 Bitboard Bitboard::flip() const { 
