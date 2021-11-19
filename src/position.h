@@ -9,7 +9,16 @@ class Position {
   public:
     struct PieceList {
       int count;
-      Square squares[MAX_ON_BOARD];
+      int squares[MAX_ON_BOARD];
+      PieceList() : count{0}, squares{0} {}
+    };
+
+    struct MetaData {
+      int to_move;
+      bool castling_rights[4]; 
+      int en_pass;
+      int fifty_moves;
+      MetaData() : to_move{WHITE}, castling_rights{true, true, true, true}, en_pass{NO_SQ}, fifty_moves{0} {}
     };
 
     // Default constructor initializes the squareList
@@ -38,6 +47,7 @@ class Position {
     Bitboard bbs[NUM_PIECES + 1];
     PieceList pieceList[NUM_PIECES];
     Piece squareList[BOARD_SQ_NUM];
+    MetaData metadata;
 };
 
 #endif

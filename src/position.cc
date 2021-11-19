@@ -32,40 +32,35 @@ void removePieceToPieceList(Position::PieceList *pl, Piece p, int sq120) {
     pl[p].count--;
 }
 
+bool isPieceOnSquare(Position::PieceList *pl, int p, int sq120) {
+    for (int i = 0; i < pl[p].count; ++i)
+        if (pl[p].squares[i] == sq120) return true;
+    return false;
+}
+
 // Position implementation
 Position::Position() {
-    // Set the empty bitboard to full
     bbs[EMPTY] = FULL_BB;
-    // Set all piece lists to count 0 and squares NO_SQ
-    for (int i = 0; i < NUM_PIECES; ++i) {
-        pieceList[i].count = 0;
-        for (int j = 0; j < MAX_ON_BOARD; ++j)
-            pieceList[i].squares[j] = NO_SQ;
-    }
-    // Set square list to EMPTY and OFFBOARD
     for (int i = 0; i < BOARD_SQ_NUM; ++i) 
         squareList[i] = (isValidSquare(i)) ? EMPTY : OFFBOARD;
 }
 
 bool Position::isConsistent() {
-    for (int i = 0; i < BOARD_SQ_NUM; ++i) {
-        if (isValidSquare(i)) {
-            Piece p = squareList[i];
-            // Assert that the p bitboard has the square i set to 1
-            assert(bbs[p].get(square120to64(i)));
-            if (p != EMPTY) {
-                bool foundSquare = false;
-                for (int j = 0; j < pieceList[p].count; ++j) {
-                    if (pieceList[p].squares[j] == i) {
-                        foundSquare = true;
-                        break;
-                    }
+    for (int sq120 = 0; sq120 < BOARD_SQ_NUM; ++sq120) {
+        if (isValidSquare(sq120)) {
+            Piece p = squareList[sq120];
+            for (int piece = EMPTY; piece < OFFBOARD; ++piece) {
+                if (piece == p) {
+                    assert(bbs[piece].get(square120to64(sq120)));
+                    if (piece != EMPTY) assert(isPieceOnSquare(pieceList, piece, sq120));
+                } else {
+                    assert(!bbs[piece].get(square120to64(sq120)));
+                    assert(!isPieceOnSquare(pieceList, piece, sq120));
                 }
-                // Assert that the p pieceList contains the square i in its squarelist
-                assert(foundSquare);
             }
         }
     }
+    return true;
 }
 
 void Position::placePiece(Piece p, Square s) {
