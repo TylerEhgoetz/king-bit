@@ -1,6 +1,7 @@
 #ifndef _POSITION_H_
 #define _POSITION_H_
 #include <iostream>
+#include <vector>
 #include "piece.h"
 #include "square.h"
 #include "bitboard.h"
@@ -21,8 +22,19 @@ class Position {
       MetaData() : to_move{WHITE}, castling_rights{true, true, true, true}, en_pass{NO_SQ}, fifty_moves{0} {}
     };
 
+    struct Move {
+      int from;
+      int to;
+      int flags;
+      int piece_captured;
+      Move(int f, int t, int fl, int pc) : from{f}, to{t}, flags{fl}, piece_captured{pc} {}
+    };
+
     // Default constructor initializes the squareList
     Position();
+
+    // Getter methods
+    Color getSideToMove();
 
     // Verifies that the bitboards, squarelist and piecelist are consistent with eachother
     bool isConsistent();
@@ -38,6 +50,9 @@ class Position {
     //  * square is a valid square on the chess board
     //  * the piece occupying the square is not EMPTY of OFFBOARD
     Piece removePiece(Square);
+
+    // generateMoves produces a vector of all possible legal moves from the current position
+    std::vector<Move> generateMoves();
 
     // Prints the pieces on each valid square
     friend std::ostream &operator<<(std::ostream &, const Position &);

@@ -45,6 +45,8 @@ Position::Position() {
         squareList[i] = (isValidSquare(i)) ? EMPTY : OFFBOARD;
 }
 
+Color Position::getSideToMove() { return Color(metadata.to_move); }
+
 bool Position::isConsistent() {
     for (int sq120 = 0; sq120 < BOARD_SQ_NUM; ++sq120) {
         if (isValidSquare(sq120)) {
@@ -86,6 +88,17 @@ Piece Position::removePiece(Square s) {
     // Update squarelist
     squareList[s] = EMPTY;
     return p;
+}
+
+std::vector<Position::Move> Position::generateMoves() {
+    std::vector<Position::Move> moves;
+    for (int piece = wP; piece < OFFBOARD; ++piece) {
+        for (int j = 0; j < pieceList[piece].count; ++j) {
+            int square = pieceList[piece].squares[j];
+            moves.emplace_back(square, square, 0, 0);
+        }
+    }
+    return moves;
 }
 
 std::ostream &operator<<(std::ostream &out, const Position &p) {
