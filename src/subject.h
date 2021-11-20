@@ -6,10 +6,10 @@
 class Observer;
 
 class Subject {
-  std::vector<std::unique_ptr<Observer>> observers;
+  std::vector<Observer*> observers;
  public:
   void attach(std::unique_ptr<Observer> o);
-  void detach(std::unique_ptr<Observer> o);
+  void detach(Observer *o);
   void notifyObservers();
   virtual ~Subject() = default;
 };

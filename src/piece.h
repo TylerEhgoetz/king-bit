@@ -1,5 +1,6 @@
 #ifndef _PIECE_H_
 #define _PIECE_H_
+#include <cassert>
 
 enum Color { WHITE, BLACK, BOTH };
 
@@ -24,9 +25,28 @@ const int PieceColor[] = {
     BOTH,
 };
 
+const char PieceChar[] = {
+    ' ',
+    'P', 'N', 'B', 'R', 'Q', 'K',
+    'p', 'n', 'b', 'r', 'q', 'k',
+    '\0'
+};
+
 inline bool isValidPiece(int p) {
     // Produces true if the piece is not EMPTY or OFFBOARD
     return !(p == EMPTY || p == OFFBOARD);
+}
+
+inline int charToPiece(char piece, int color) {
+    return EMPTY; // TODO: change to real piece value when finished
+}
+
+inline int stringToColor(std::string color) {
+    int c;
+    if (color == "white") c = WHITE;
+    if (color == "black") c = BLACK;
+    assert(c == WHITE || c == BLACK);
+    return c;
 }
 
 #endif

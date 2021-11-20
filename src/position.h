@@ -8,7 +8,7 @@ extern const int BOARD_SQ_NUM;
 
 class Position {
   private:
-    Piece squareList[BOARD_SQ_NUM];
+    int squareList[BOARD_SQ_NUM];
 
   public:
     // Default constructor initializes the squareList
@@ -18,13 +18,13 @@ class Position {
     // Requires: 
     //  * piece is not EMPTY or OFFBOARD
     //  * square is a valid square on the chess board
-    void placePiece(Piece, Square);
+    void placePiece(int, int);
 
     // removePiece removes and returns the piece on the given square
     // Requires:
     //  * square is a valid square on the chess board
     //  * the piece occupying the square is not EMPTY of OFFBOARD
-    Piece removePiece(Square);
+    int removePiece(int);
 
     // Prints the pieces on each valid square
     friend std::ostream &operator<<(std::ostream &, const Position &);

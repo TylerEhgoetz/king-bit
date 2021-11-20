@@ -8,16 +8,16 @@ Position::Position() {
     }
 }
 
-void Position::placePiece(Piece p, Square s) {
+void Position::placePiece(int p, int s) {
     assert(isValidPiece(p));
     assert(isValidSquare(s));
     squareList[s] = p;
 }
 
-Piece Position::removePiece(Square s) {
+int Position::removePiece(int s) {
     assert(isValidSquare(s));
     assert(isValidPiece(squareList[s]));
-    Piece p = squareList[s];
+    int p = squareList[s];
     squareList[s] = EMPTY;
     return p;
 }

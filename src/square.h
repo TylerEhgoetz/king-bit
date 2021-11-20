@@ -73,4 +73,12 @@ inline int square64to120(int sq64) {
     return A8 + sq64 % 8;
 }
 
+inline int stringToSquare120(std::string square) {
+    char file = square[0];
+    char rank = square[1];
+    int s = (file - 'a' + A1) + ((rank - '1') * 10);
+    assert(isValidSquare(s));
+    return s;
+}
+
 #endif
