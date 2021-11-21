@@ -1,5 +1,6 @@
 #ifndef _PIECE_H_
 #define _PIECE_H_
+#include <cassert>
 
 enum Color { WHITE, BLACK, BOTH };
 
@@ -32,12 +33,31 @@ const bool IsSlidingPiece[NUM_PIECES] {
     false, false, true, true, true, false,
 };
 
-inline bool isValidPiece(int p) {
+const char PieceChar[] = {
+    ' ',
+    'P', 'N', 'B', 'R', 'Q', 'K',
+    'p', 'n', 'b', 'r', 'q', 'k',
+    '\0'
+};
+
+inline bool isValidPiece(Piece p) {
     // Produces true if the piece is not EMPTY or OFFBOARD
     return !(p == EMPTY || p == OFFBOARD);
 }
 
-inline bool isPawn(int p) {
+inline Piece charToPiece(char piece, Color color) {
+    return EMPTY; // TODO: change to real piece value when finished
+}
+
+inline Color stringToColor(std::string color) {
+    Color c;
+    if (color == "white") c = WHITE;
+    if (color == "black") c = BLACK;
+    assert(c == WHITE || c == BLACK);
+    return c;
+}
+
+inline bool isPawn(Piece p) {
     return p == wP || p == bP;
 }
 

@@ -20,7 +20,7 @@ enum File { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE
 
 enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
-inline int squareToFile(int square) {
+inline int squareToFile(Square square) {
     if (A1 <= square && square <= H8) {
         switch (square % 10) {
           case 1: return FILE_A;
@@ -36,7 +36,7 @@ inline int squareToFile(int square) {
     return FILE_NONE;
 }
 
-inline int squareToRank(int square) {
+inline int squareToRank(Square square) {
     if ( !(square % 10 == 0 || square % 10 == 9) ) {
         switch (square / 10) {
           case 2: return RANK_1; 
@@ -52,12 +52,12 @@ inline int squareToRank(int square) {
     return RANK_NONE;
 }
 
-inline bool isValidSquare(int sq120) {
+inline bool isValidSquare(Square sq120) {
     // Produces true if the square is not on FILE_NONE and not on RANK_NONE
     return !(squareToFile(sq120) == FILE_NONE || squareToRank(sq120) == RANK_NONE);
 }
 
-inline int square120to64(int sq120) {
+inline int square120to64(Square sq120) {
     assert(isValidSquare(sq120));
     return 8 * squareToRank(sq120) + squareToFile(sq120);
 }
@@ -72,6 +72,14 @@ inline int square64to120(int sq64) {
     if (sq64 < 48) return A6 + sq64 % 8;
     if (sq64 < 56) return A7 + sq64 % 8;
     return A8 + sq64 % 8;
+}
+
+inline Square stringToSquare120(std::string square) {
+    char file = square[0];
+    char rank = square[1];
+    Square s = Square((file - 'a' + A1) + ((rank - '1') * 10));
+    assert(isValidSquare(Square(s)));
+    return s;
 }
 
 #endif

@@ -49,7 +49,7 @@ class Position {
     // Requires:
     //  * square is a valid square on the chess board
     //  * the piece occupying the square is not EMPTY of OFFBOARD
-    Piece removePiece(Square);
+    int removePiece(Square);
 
     // generateMoves produces a vector of all possible legal moves from the current position
     std::vector<Move> generateMoves();

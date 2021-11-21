@@ -5,11 +5,11 @@ DEPENDS=${OBJECTS:.o=.d}
 EXEC=kingbit
 
 ${EXEC}: ${OBJECTS}
-	${CXX} ${OBJECTS} -o ${EXEC}
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
 
 -include ${DEPENDS}
 
 .PHONY: clean
 
 clean:
-	rm ${OBJECTS} ${DEPENDS} ${EXEC}
+	rm ${OBJECTS} ${EXEC} ${DEPENDS}
