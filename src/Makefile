@@ -1,8 +1,8 @@
 CXX=g++
-CXXFLAGS=-std=c++14 -MMD
-OBJECTS=main.o 
+CXXFLAGS=-std=c++14 -MMD -g
+OBJECTS=local_main.o position.o bitboard.o 
 DEPENDS=${OBJECTS:.o=.d}
-EXEC=
+EXEC=kingbit
 
 ${EXEC}: ${OBJECTS}
 	${CXX} ${OBJECTS} -o ${EXEC}
