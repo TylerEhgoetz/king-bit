@@ -8,11 +8,11 @@
 extern const int BOARD_SQ_NUM;
 
 class TextDisplay: public Observer {
-  Game *text;
+  Game *game;
   std::ostream &out = std::cout;
   
  public:
-  TextDisplay( Game *text);
+  TextDisplay(Game *text);
   void notify() override;
   ~TextDisplay();
 };

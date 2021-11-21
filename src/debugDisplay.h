@@ -10,10 +10,9 @@ extern const int BOARD_SQ_NUM;
 class DebugDisplay: public Observer {
   Game *game;
   std::ostream &out = std::cout;
-  std::unique_ptr<Observer> o;
   
  public:
-  DebugDisplay( Game *text);
+  DebugDisplay(Game *debug);
   void notify() override;
   ~DebugDisplay();
 };

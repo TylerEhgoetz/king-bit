@@ -5,11 +5,11 @@
 #include <memory>
 #include <string>
 
-class Agent;
+//class Agent;
 
 class Game: public Subject {
     Position p;
-    std::unique_ptr<Agent> agents[2];
+    //std::unique_ptr<Agent> agents[2];
     int score1, score2;
     public:
     //setup mode

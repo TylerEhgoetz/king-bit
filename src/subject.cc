@@ -1,7 +1,7 @@
 #include "subject.h"
 #include "observer.h"
 
-void Subject::attach(std::unique_ptr<Observer> o) { observers.emplace_back(o); }
+void Subject::attach(Observer *o) { observers.emplace_back(o); }
 
 void Subject::detach(Observer *o) {
   for (auto it = observers.begin(); it != observers.end(); ) {

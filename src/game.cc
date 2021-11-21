@@ -50,7 +50,7 @@ void Game::enterSetupMode() {
         }
     }
 }
-
+/*
 void Game::increaseScore(int color) {
     if (color == WHITE) ++score1;
     else if (color == BLACK) ++score2;
@@ -78,4 +78,4 @@ void Game::enterGameMode() {
 
 Game Game::startNewGame(std::string player1, std::string player2) {
 
-}
+} */

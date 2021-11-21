@@ -1,11 +1,8 @@
 #include "debugDisplay.h"
 #include <memory>
 
-DebugDisplay::DebugDisplay( Game *game) 
-    : game{game} {
-        auto obs = std::make_unique<Observer>(this);
-        game->attach(std::move(obs));
-        }
+DebugDisplay::DebugDisplay( Game *text) 
+    : game{text} {game->attach(this);}
 
 DebugDisplay::~DebugDisplay() {
     game->detach(this);
