@@ -95,6 +95,7 @@ std::vector<Position::Move> Position::generateMoves() {
     for (int piece = wP; piece < OFFBOARD; ++piece) {
         for (int j = 0; j < pieceList[piece].count; ++j) {
             int square = pieceList[piece].squares[j];
+            // TODO: make this correct
             moves.emplace_back(square, square, 0, 0);
         }
     }

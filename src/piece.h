@@ -32,13 +32,6 @@ const bool IsSlidingPiece[NUM_PIECES] {
     false, false, true, true, true, false,
 };
 
-const int MoveRules[NUM_PIECES][10] {
-    {0},
-    {10},                                // WHITE PAWN
-    {-12, -21, -19, -8, 12, 21, 19, 8},  // WHITE KNIGHT
-    {0}
-};
-
 inline bool isValidPiece(int p) {
     // Produces true if the piece is not EMPTY or OFFBOARD
     return !(p == EMPTY || p == OFFBOARD);
