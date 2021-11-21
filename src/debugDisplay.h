@@ -1,5 +1,5 @@
-#ifndef TEXT_DISPLAY_H
-#define TEXT_DISPLAY_H
+#ifndef DEBUG_DISPLAY_H
+#define DEBUG_DISPLAY_H
 #include "observer.h"
 #include "game.h"
 #include <memory>

@@ -16,14 +16,14 @@ void removePieceOnBitboards(Bitboard *bbs, Piece p, int sq64) {
 }
 
 // PieceList helper functions
-void addPieceToPieceList(Position::PieceList *pl, Piece p, int sq120) {
+void addPieceToPieceList(Position::PieceList *pl, Piece p, Square sq120) {
     int num_pieces = pl[p].count;
     assert(num_pieces < MAX_ON_BOARD);
     pl[p].squares[num_pieces] = Square(sq120);
     pl[p].count++;
 }
 
-void removePieceToPieceList(Position::PieceList *pl, Piece p, int sq120) {
+void removePieceToPieceList(Position::PieceList *pl, Piece p, Square sq120) {
     int i = 0;
     // Get i to be the index of sq120 in pl[p].squares
     while (i < pl[p].count && pl[p].squares[i] != sq120) ++i;
@@ -32,7 +32,7 @@ void removePieceToPieceList(Position::PieceList *pl, Piece p, int sq120) {
     pl[p].count--;
 }
 
-bool isPieceOnSquare(Position::PieceList *pl, int p, int sq120) {
+bool isPieceOnSquare(Position::PieceList *pl, Piece p, Square sq120) {
     for (int i = 0; i < pl[p].count; ++i)
         if (pl[p].squares[i] == sq120) return true;
     return false;
@@ -42,20 +42,20 @@ bool isPieceOnSquare(Position::PieceList *pl, int p, int sq120) {
 Position::Position() {
     bbs[EMPTY] = FULL_BB;
     for (int i = 0; i < BOARD_SQ_NUM; ++i) 
-        squareList[i] = (isValidSquare(i)) ? EMPTY : OFFBOARD;
+        squareList[i] = (isValidSquare(Square(i))) ? EMPTY : OFFBOARD;
 }
 
 bool Position::isConsistent() {
     for (int sq120 = 0; sq120 < BOARD_SQ_NUM; ++sq120) {
-        if (isValidSquare(sq120)) {
+        if (isValidSquare(Square(sq120))) {
             Piece p = squareList[sq120];
             for (int piece = EMPTY; piece < OFFBOARD; ++piece) {
                 if (piece == p) {
-                    assert(bbs[piece].get(square120to64(sq120)));
-                    if (piece != EMPTY) assert(isPieceOnSquare(pieceList, piece, sq120));
+                    assert(bbs[piece].get(square120to64(Square(sq120))));
+                    if (piece != EMPTY) assert(isPieceOnSquare(pieceList, Piece(piece), Square(sq120)));
                 } else {
-                    assert(!bbs[piece].get(square120to64(sq120)));
-                    assert(!isPieceOnSquare(pieceList, piece, sq120));
+                    assert(!bbs[piece].get(square120to64(Square(sq120))));
+                    assert(!isPieceOnSquare(pieceList, Piece(piece), Square(sq120)));
                 }
             }
         }
@@ -63,7 +63,7 @@ bool Position::isConsistent() {
     return true;
 }
 
-void Position::placePiece(int p, int s) {
+void Position::placePiece(Piece p, Square s) {
     assert(isValidPiece(p));
     assert(isValidSquare(s));
     assert(squareList[s] == EMPTY);
@@ -75,7 +75,7 @@ void Position::placePiece(int p, int s) {
     squareList[s] = p;
 }
 
-int Position::removePiece(int s) {
+int Position::removePiece(Square s) {
     assert(isValidSquare(s));
     Piece p = squareList[s];
     assert(isValidPiece(p));
@@ -91,9 +91,9 @@ int Position::removePiece(int s) {
 std::ostream &operator<<(std::ostream &out, const Position &p) {
     out << "Square List:" << std::endl;
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
-        if (isValidSquare(i)) {
+        if (isValidSquare(Square(i))) {
             out << std::setw(4) << p.squareList[i];
-            if (squareToFile(i) == FILE_H) out << std::endl;
+            if (squareToFile(Square(i)) == FILE_H) out << std::endl;
         }
     }
     out << std::endl;

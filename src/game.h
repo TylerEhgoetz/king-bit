@@ -14,11 +14,11 @@ class Game: public Subject {
     public:
     //setup mode
     void enterSetupMode();
-    void placePiece(int, int);
-    void removePiece(int);
-    void setColour(int);
-    int getColor();
-    char getPiece(int);
+    void placePiece(Piece, Square);
+    void removePiece(Square);
+    void setColour(Color);
+    Color getColor();
+    char getPiece(Square);
     //game mode
     void enterGameMode();
     Game startNewGame(std::string, std::string);

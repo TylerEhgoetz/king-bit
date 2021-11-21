@@ -36,24 +36,24 @@ const char PieceChar[] = {
     '\0'
 };
 
-inline bool isValidPiece(int p) {
+inline bool isValidPiece(Piece p) {
     // Produces true if the piece is not EMPTY or OFFBOARD
     return !(p == EMPTY || p == OFFBOARD);
 }
 
-inline int charToPiece(char piece, int color) {
+inline Piece charToPiece(char piece, Color color) {
     return EMPTY; // TODO: change to real piece value when finished
 }
 
-inline int stringToColor(std::string color) {
-    int c;
+inline Color stringToColor(std::string color) {
+    Color c;
     if (color == "white") c = WHITE;
     if (color == "black") c = BLACK;
     assert(c == WHITE || c == BLACK);
     return c;
 }
 
-inline bool isPawn(int p) {
+inline bool isPawn(Piece p) {
     return p == wP || p == bP;
 }
 

@@ -12,9 +12,12 @@ TextDisplay::~TextDisplay() {
 // getPiece(int) gets the piece at 120 int representation
 void TextDisplay::notify() {
     int rank = 8;
-    out << rank;
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
-        if (isValidSquare(i)) {
+        if (isValidSquare(Square(i))) {
+            if (squareToFile(Square(i)) == FILE_A) {
+                out << rank << ' ';
+                --rank;
+            }
             /*char p = game->getPiece(i);
             if ((p == ' ' && rank % 2 == 0 && i % 2 == 0) ||
             (p == ' ' && rank % 2 == 1 && i % 2 != 0)) {
@@ -23,10 +26,7 @@ void TextDisplay::notify() {
                 out << p;
             }*/
             out << '_';
-            if (squareToFile(i) == FILE_H) {
-                --rank;
-                out << std::endl << rank;
-            }
+            if (squareToFile(Square(i)) == FILE_H) out << std::endl;
         }
     }
 }

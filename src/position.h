@@ -37,7 +37,7 @@ class Position {
     // Requires:
     //  * square is a valid square on the chess board
     //  * the piece occupying the square is not EMPTY of OFFBOARD
-    int removePiece(int);
+    int removePiece(Square);
 
     // Prints the pieces on each valid square
     friend std::ostream &operator<<(std::ostream &, const Position &);

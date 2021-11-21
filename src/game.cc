@@ -4,23 +4,23 @@
 #include <string>
 #include <iostream>
 
-void Game::placePiece(int piece, int square) {
+void Game::placePiece(Piece piece, Square square) {
     p.placePiece(piece, square);
 }
 
-void Game::removePiece(int square) {
+void Game::removePiece(Square square) {
     p.removePiece(square);
 }
 
-void Game::setColour(int colour) {
+void Game::setColour(Color colour) {
     // TODO: call position setColour once created
 }
 
-int Game::getColor() {
+Color Game::getColor() {
     // TODO: call position getColour once created
 }
 
-char Game::getPiece(int square) {
+char Game::getPiece(Square s) {
     // TODO: call position getPiece once created
 }
 
