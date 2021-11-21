@@ -11,6 +11,10 @@ enum Piece {
     OFFBOARD 
 };
 
+const int NUM_PIECES = 13;
+
+const int MAX_ON_BOARD = 10;
+
 const int PieceVal[] = {
     0,
     100, 325, 325, 550, 1000, 9999,
@@ -47,6 +51,10 @@ inline int stringToColor(std::string color) {
     if (color == "black") c = BLACK;
     assert(c == WHITE || c == BLACK);
     return c;
+}
+
+inline bool isPawn(int p) {
+    return p == wP || p == bP;
 }
 
 #endif
