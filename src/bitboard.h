@@ -5,22 +5,23 @@
 
 const int CHESS_SQ_NUM = 64;
 
+typedef std::bitset<CHESS_SQ_NUM> chess_bits;
+
 class Bitboard {
   private:
-    std::bitset<CHESS_SQ_NUM> bits;
+    chess_bits bits;
 
   public:
-    // Default constructor constructs the empty bitboard
     Bitboard();
-
-    // Constructor constructs a bitboard with the indicated bit set
     Bitboard(int bit);
+    Bitboard(chess_bits bitset);
 
     // Basic operations
     void set(int bit);
     void clear(int bit);
     int get(int bit) const;
     int count() const;
+    chess_bits getBitset() const;
 
     // flip produces the complement of the current bitboard
     Bitboard flip() const;
