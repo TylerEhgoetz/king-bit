@@ -16,13 +16,9 @@ void Game::setColour(Color colour) {
     // TODO: call position setColour once created
 }
 
-Color Game::getColor() {
-    // TODO: call position getColour once created
-}
+Color Game::getColor() const { return p.getSideToMove();}
 
-char Game::getPiece(Square s) {
-    // TODO: call position getPiece once created
-}
+char Game::getPiece(Square s) { return PieceChar[p.getPiece(s)];}
 
 void Game::enterSetupMode() {
     std::string command;
@@ -50,6 +46,7 @@ void Game::enterSetupMode() {
         }
     }
 }
+
 /*
 void Game::increaseScore(int color) {
     if (color == WHITE) ++score1;

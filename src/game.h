@@ -17,7 +17,7 @@ class Game: public Subject {
     void placePiece(Piece, Square);
     void removePiece(Square);
     void setColour(Color);
-    Color getColor();
+    Color getColor() const;
     char getPiece(Square);
     //game mode
     void enterGameMode();
