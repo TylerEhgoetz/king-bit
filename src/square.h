@@ -62,16 +62,16 @@ inline int square120to64(Square sq120) {
     return 8 * squareToRank(sq120) + squareToFile(sq120);
 }
 
-inline int square64to120(int sq64) {
+inline Square square64to120(int sq64) {
     assert(0 <= sq64 && sq64 <= 63);
-    if (sq64 < 8)  return A1 + sq64;
-    if (sq64 < 16) return A2 + sq64 % 8;
-    if (sq64 < 24) return A3 + sq64 % 8;
-    if (sq64 < 32) return A4 + sq64 % 8;
-    if (sq64 < 40) return A5 + sq64 % 8;
-    if (sq64 < 48) return A6 + sq64 % 8;
-    if (sq64 < 56) return A7 + sq64 % 8;
-    return A8 + sq64 % 8;
+    if (sq64 < 8)  return Square(A1 + sq64);
+    if (sq64 < 16) return Square(A2 + sq64 % 8);
+    if (sq64 < 24) return Square(A3 + sq64 % 8);
+    if (sq64 < 32) return Square(A4 + sq64 % 8);
+    if (sq64 < 40) return Square(A5 + sq64 % 8);
+    if (sq64 < 48) return Square(A6 + sq64 % 8);
+    if (sq64 < 56) return Square(A7 + sq64 % 8);
+    return Square(A8 + sq64 % 8);
 }
 
 inline Square stringToSquare120(std::string square) {
@@ -80,6 +80,31 @@ inline Square stringToSquare120(std::string square) {
     Square s = Square((file - 'a' + A1) + ((rank - '1') * 10));
     assert(isValidSquare(Square(s)));
     return s;
+}
+
+inline std::string squareToString(Square s) {
+    std::string ret;
+    switch (squareToFile(s)) {
+        case FILE_A: ret += 'A'; break;
+        case FILE_B: ret += 'B'; break;
+        case FILE_C: ret += 'C'; break;
+        case FILE_D: ret += 'D'; break;
+        case FILE_E: ret += 'E'; break;
+        case FILE_F: ret += 'F'; break;
+        case FILE_G: ret += 'G'; break;
+        case FILE_H: ret += 'H'; break;
+    }
+    switch (squareToRank(s)) { 
+        case RANK_1: ret += '1'; break;
+        case RANK_2: ret += '2'; break;
+        case RANK_3: ret += '3'; break;
+        case RANK_4: ret += '4'; break;
+        case RANK_5: ret += '5'; break;
+        case RANK_6: ret += '6'; break;
+        case RANK_7: ret += '7'; break;
+        case RANK_8: ret += '8'; break;
+    }
+    return ret;
 }
 
 #endif

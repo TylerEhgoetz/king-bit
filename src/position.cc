@@ -1,3 +1,4 @@
+#include <bitset>
 #include <cassert>
 #include <iomanip>
 #include "position.h"
@@ -38,6 +39,48 @@ bool isPieceOnSquare(Position::PieceList *pl, Piece p, Square sq120) {
     return false;
 }
 
+// Move flags
+const std::bitset<4> QUIET{"0000"};
+const std::bitset<4> DOUBLE_PAWN_PUSH{"0001"};
+const std::bitset<4> CAPTURES{"0100"};
+
+// Move generation helper functions
+void addPawnPushes(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
+    assert(isValidSquare(src));
+    assert(col == WHITE || col == BLACK);
+    auto pawnSinglePush = (col == WHITE) ? &Bitboard::wPawnSinglePush : &Bitboard::bPawnSinglePush;
+    auto pawnDoublePush = (col == WHITE) ? &Bitboard::wPawnDoublePush : &Bitboard::bPawnDoublePush;
+    Bitboard empty = p->getBitboards()[EMPTY];
+    Bitboard pawn{square120to64(src)};
+    Bitboard singlePush = (pawn.*pawnSinglePush)(empty);
+    if (singlePush.count()) {
+        Square dest = square64to120(singlePush.pop());
+        assert(!p->getPiece(dest));
+        moves.emplace_back(src, dest, QUIET, EMPTY);
+        Bitboard doublePush = (pawn.*pawnDoublePush)(empty);
+        if (doublePush.count()) {
+            dest = square64to120(doublePush.pop());
+            assert(!p->getPiece(dest));
+            moves.emplace_back(src, dest, DOUBLE_PAWN_PUSH, EMPTY);
+        }
+    }
+}
+
+void addPawnAttacks(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
+    assert(isValidSquare(src));
+    assert(col == WHITE || col == BLACK);
+    auto pawnAttacks = (col == WHITE) ? &Bitboard::wPawnAttacks : &Bitboard::bPawnAttacks;
+    Color opposingColor = (col == WHITE) ? BLACK : WHITE;
+    Bitboard pawn{square120to64(src)};
+    Bitboard opposingPieces = p->getBitboardOfColor(opposingColor);
+    Bitboard attacks = (pawn.*pawnAttacks)(opposingPieces);
+    while (attacks.count()) {
+        Square dest = square64to120(attacks.pop());
+        assert(PieceColor[p->getPiece(dest)] == opposingColor);
+        moves.emplace_back(src, dest, CAPTURES, p->getPiece(dest));
+    }
+}
+
 // Position implementation
 Position::Position() {
     bbs[EMPTY] = FULL_BB;
@@ -45,7 +88,20 @@ Position::Position() {
         squareList[i] = (isValidSquare(Square(i))) ? EMPTY : OFFBOARD;
 }
 
-Color Position::getSideToMove() { return Color(metadata.to_move); }
+Color Position::getSideToMove() const { return Color(metadata.to_move); }
+
+Bitboard Position::getBitboardOfColor(Color col) const {
+    std::bitset<CHESS_SQ_NUM> ret{};
+    for (int piece = wP; piece < OFFBOARD; ++piece)
+        if (PieceColor[piece] == col) ret |= bbs[piece].getBits();
+    return Bitboard{ret};
+}
+
+const Bitboard * Position::getBitboards() const { return bbs; }
+
+Piece Position::getPiece(Square s) const { return squareList[s]; }
+
+bool Position::isEmpty() const { return bbs[EMPTY] == FULL_BB; }
 
 bool Position::isConsistent() {
     for (int sq120 = 0; sq120 < BOARD_SQ_NUM; ++sq120) {
@@ -94,9 +150,37 @@ std::vector<Position::Move> Position::generateMoves() {
     std::vector<Position::Move> moves;
     for (int piece = wP; piece < OFFBOARD; ++piece) {
         for (int j = 0; j < pieceList[piece].count; ++j) {
-            int square = pieceList[piece].squares[j];
-            // TODO: make this correct
-            moves.emplace_back(square, square, 0, 0);
+            Square sq120 = Square(pieceList[piece].squares[j]);
+            assert(piece == squareList[sq120]);
+            switch (piece) {
+                case wP: {
+                    addPawnPushes(sq120, WHITE, this, moves);
+                    addPawnAttacks(sq120, WHITE, this, moves);
+                    break;
+                }
+                case wN: {
+                }
+                case wB: {
+                }
+                case wR: {
+                }
+                case wQ: {
+                }
+                case wK: {
+                }
+                case bP: {
+                }
+                case bN: {
+                }
+                case bB: {
+                }
+                case bQ: {
+                }
+                case bK: {
+                }
+                default: {
+                }
+            }
         }
     }
     return moves;

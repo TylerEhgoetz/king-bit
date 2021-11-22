@@ -23,18 +23,22 @@ class Position {
     };
 
     struct Move {
-      int from;
-      int to;
-      int flags;
-      int piece_captured;
-      Move(int f, int t, int fl, int pc) : from{f}, to{t}, flags{fl}, piece_captured{pc} {}
+      Square from;
+      Square to;
+      std::bitset<4> flags;
+      Piece piece_captured;
+      Move(Square f, Square t, std::bitset<4> fl, Piece pc) : from{f}, to{t}, flags{fl}, piece_captured{pc} {}
     };
 
     // Default constructor initializes the squareList
     Position();
 
     // Getter methods
-    Color getSideToMove();
+    Color getSideToMove() const;
+    Bitboard getBitboardOfColor(Color col) const;
+    const Bitboard * getBitboards() const;
+    Piece getPiece(Square s) const;
+    bool isEmpty() const;
 
     // Verifies that the bitboards, squarelist and piecelist are consistent with eachother
     bool isConsistent();

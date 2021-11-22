@@ -17,11 +17,12 @@ class Bitboard {
     Bitboard(chess_bits bitset);
 
     // Basic operations
+    bool operator==(const Bitboard &bb) const;
     void set(int bit);
     void clear(int bit);
     int get(int bit) const;
     int count() const;
-    chess_bits getBitset() const;
+    chess_bits getBits() const;
 
     // flip produces the complement of the current bitboard
     Bitboard flip() const;
@@ -31,12 +32,23 @@ class Bitboard {
     int pop();
 
     // Piece attack patterns
-    Bitboard getPawnAttacks() const;
-    Bitboard getKnightAttacks() const;
-    Bitboard getBishopAttacks() const;
-    Bitboard getRookAttacks() const;
-    Bitboard getQueenAttacks() const;
-    Bitboard getKingAttacks() const;
+    Bitboard wPawnSinglePush(const Bitboard empty) const;
+    Bitboard wPawnDoublePush(const Bitboard empty) const;
+    Bitboard wPawnAttacks(const Bitboard bPieces) const;
+
+    Bitboard bPawnSinglePush(const Bitboard empty) const;
+    Bitboard bPawnDoublePush(const Bitboard empty) const;
+    Bitboard bPawnAttacks(const Bitboard wPieces) const;
+
+    Bitboard knightAttacks() const;
+
+    Bitboard bishopAttacks() const;
+
+    Bitboard rookAttacks() const;
+
+    Bitboard queenAttacks() const;
+
+    Bitboard kingAttacks() const;
 
     // friends
     friend std::ostream &operator<<(std::ostream &, const Bitboard &);
