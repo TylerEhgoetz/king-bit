@@ -73,10 +73,12 @@ void addPawnAttacks(Square src, Color col, Position *p, std::vector<Position::Mo
     Color opposingColor = (col == WHITE) ? BLACK : WHITE;
     Bitboard pawn{square120to64(src)};
     Bitboard opposingPieces = p->getBitboardOfColor(opposingColor);
+    Square enPass = p->getEnPassSquare();
+    if (enPass != NO_SQ) opposingPieces.set(square120to64(enPass));
     Bitboard attacks = (pawn.*pawnAttacks)(opposingPieces);
     while (attacks.count()) {
         Square dest = square64to120(attacks.pop());
-        assert(PieceColor[p->getPiece(dest)] == opposingColor);
+        assert(PieceColor[p->getPiece(dest)] == opposingColor || (enPass && !p->getPiece(dest)));
         moves.emplace_back(src, dest, CAPTURES, p->getPiece(dest));
     }
 }
@@ -88,7 +90,9 @@ Position::Position() {
         squareList[i] = (isValidSquare(Square(i))) ? EMPTY : OFFBOARD;
 }
 
-Color Position::getSideToMove() const { return Color(metadata.to_move); }
+Color Position::getSideToMove() const { return metadata.to_move; }
+
+Square Position::getEnPassSquare() const { return metadata.en_pass; }
 
 Bitboard Position::getBitboardOfColor(Color col) const {
     std::bitset<CHESS_SQ_NUM> ret{};
@@ -102,6 +106,8 @@ const Bitboard * Position::getBitboards() const { return bbs; }
 Piece Position::getPiece(Square s) const { return squareList[s]; }
 
 bool Position::isEmpty() const { return bbs[EMPTY] == FULL_BB; }
+
+void Position::setSideToMove(Color col) { metadata.to_move = col; }
 
 bool Position::isConsistent() {
     for (int sq120 = 0; sq120 < BOARD_SQ_NUM; ++sq120) {

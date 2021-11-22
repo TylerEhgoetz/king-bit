@@ -15,9 +15,9 @@ class Position {
     };
 
     struct MetaData {
-      int to_move;
+      Color to_move;
       bool castling_rights[4]; 
-      int en_pass;
+      Square en_pass;
       int fifty_moves;
       MetaData() : to_move{WHITE}, castling_rights{true, true, true, true}, en_pass{NO_SQ}, fifty_moves{0} {}
     };
@@ -35,10 +35,14 @@ class Position {
 
     // Getter methods
     Color getSideToMove() const;
+    Square getEnPassSquare() const;
     Bitboard getBitboardOfColor(Color col) const;
     const Bitboard * getBitboards() const;
     Piece getPiece(Square s) const;
     bool isEmpty() const;
+
+    // Setter methods
+    void setSideToMove(Color col);
 
     // Verifies that the bitboards, squarelist and piecelist are consistent with eachother
     bool isConsistent();
