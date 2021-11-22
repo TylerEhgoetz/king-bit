@@ -33,3 +33,6 @@
 
 # VS Code Settings
 .vscode/*
+
+# Makefile
+Makefile
