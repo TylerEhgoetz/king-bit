@@ -43,43 +43,61 @@ bool isPieceOnSquare(Position::PieceList *pl, Piece p, Square sq120) {
 const std::bitset<4> QUIET{"0000"};
 const std::bitset<4> DOUBLE_PAWN_PUSH{"0001"};
 const std::bitset<4> CAPTURES{"0100"};
+const std::bitset<4> EN_PASSANT{"0101"};
 
 // Move generation helper functions
-void addPawnPushes(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
-    assert(isValidSquare(src));
-    assert(col == WHITE || col == BLACK);
+void Position::addPawnMovesFrom(Square src, Color col, std::vector<Position::Move> &moves) const {
+    assert(isValidSquare(src));                 // Valid square
+    assert(PieceColor[squareList[src]] == col); // Color matches
+    assert(isPawn(squareList[src]));            // Is pawn
+    // Get pawn move methods for the right color
     auto pawnSinglePush = (col == WHITE) ? &Bitboard::wPawnSinglePush : &Bitboard::bPawnSinglePush;
     auto pawnDoublePush = (col == WHITE) ? &Bitboard::wPawnDoublePush : &Bitboard::bPawnDoublePush;
-    Bitboard empty = p->getBitboards()[EMPTY];
+    auto pawnAttacks = (col == WHITE) ? &Bitboard::wPawnAttacks : &Bitboard::bPawnAttacks;
+    Color opposingColor = OppositeColor[col];
+    Bitboard opposingPieces = getBitboardOfColor(opposingColor);
     Bitboard pawn{square120to64(src)};
-    Bitboard singlePush = (pawn.*pawnSinglePush)(empty);
+    // Add valid pushes to move vector
+    Bitboard singlePush = (pawn.*pawnSinglePush)(bbs[EMPTY]);
+    Bitboard doublePush = (pawn.*pawnDoublePush)(bbs[EMPTY]);
     if (singlePush.count()) {
         Square dest = square64to120(singlePush.pop());
-        assert(!p->getPiece(dest));
+        assert(getPiece(dest) == EMPTY);
         moves.emplace_back(src, dest, QUIET, EMPTY);
-        Bitboard doublePush = (pawn.*pawnDoublePush)(empty);
         if (doublePush.count()) {
             dest = square64to120(doublePush.pop());
-            assert(!p->getPiece(dest));
+            assert(getPiece(dest) == EMPTY);
             moves.emplace_back(src, dest, DOUBLE_PAWN_PUSH, EMPTY);
+        }
+    } 
+    // Add valid attacks to move vector
+    Square enPass = getEnPassSquare();
+    // Add a pseudo opposing piece on the en passant square, if it exists
+    if (enPass != NO_SQ) opposingPieces.set(square120to64(enPass));
+    Bitboard attacks = (pawn.*pawnAttacks)(opposingPieces);
+    while (attacks != EMPTY_BB) {
+        Square dest = square64to120(attacks.pop());
+        if (enPass) {
+            assert(getPiece(dest) == EMPTY);
+            moves.emplace_back(src, dest, EN_PASSANT, EMPTY); // TODO: make last param square or piece list index
+        } else {
+            assert(PieceColor[getPiece(dest)] == opposingColor);
+            moves.emplace_back(src, dest, CAPTURES, getPiece(dest));
         }
     }
 }
 
-void addPawnAttacks(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
+void addKnightAttacks(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
     assert(isValidSquare(src));
     assert(col == WHITE || col == BLACK);
-    auto pawnAttacks = (col == WHITE) ? &Bitboard::wPawnAttacks : &Bitboard::bPawnAttacks;
-    Color opposingColor = (col == WHITE) ? BLACK : WHITE;
-    Bitboard pawn{square120to64(src)};
-    Bitboard opposingPieces = p->getBitboardOfColor(opposingColor);
-    Square enPass = p->getEnPassSquare();
-    if (enPass != NO_SQ) opposingPieces.set(square120to64(enPass));
-    Bitboard attacks = (pawn.*pawnAttacks)(opposingPieces);
-    while (attacks.count()) {
+    Bitboard knight{square120to64(src)};
+    Bitboard samePieces = p->getBitboardOfColor(col);
+    Bitboard attacks = knight.knightAttacks(samePieces);
+    while (attacks != EMPTY_BB) {
         Square dest = square64to120(attacks.pop());
-        assert(PieceColor[p->getPiece(dest)] == opposingColor || (enPass && !p->getPiece(dest)));
-        moves.emplace_back(src, dest, CAPTURES, p->getPiece(dest));
+        assert(PieceColor[p->getPiece(dest)] == OppositeColor[col] || !p->getPiece(dest));
+        if (!p->getPiece(dest)) moves.emplace_back(src, dest, QUIET, EMPTY);
+        else moves.emplace_back(src, dest, CAPTURES, p->getPiece(dest));
     }
 }
 
@@ -160,11 +178,12 @@ std::vector<Position::Move> Position::generateMoves() {
             assert(piece == squareList[sq120]);
             switch (piece) {
                 case wP: {
-                    addPawnPushes(sq120, WHITE, this, moves);
-                    addPawnAttacks(sq120, WHITE, this, moves);
+                    addPawnMovesFrom(sq120, WHITE, moves);
                     break;
                 }
                 case wN: {
+                    addKnightAttacks(sq120, WHITE, this, moves); 
+                    break;
                 }
                 case wB: {
                 }

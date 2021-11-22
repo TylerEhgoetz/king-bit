@@ -71,6 +71,9 @@ class Position {
     PieceList pieceList[NUM_PIECES];
     Piece squareList[BOARD_SQ_NUM];
     MetaData metadata;
+
+    // These methods are used for move generation
+    void addPawnMovesFrom(Square, Color, std::vector<Move> &) const;
 };
 
 #endif

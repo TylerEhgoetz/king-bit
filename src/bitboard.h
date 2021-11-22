@@ -18,6 +18,7 @@ class Bitboard {
 
     // Basic operations
     bool operator==(const Bitboard &bb) const;
+    bool operator!=(const Bitboard &bb) const;
     void set(int bit);
     void clear(int bit);
     int get(int bit) const;
@@ -40,7 +41,7 @@ class Bitboard {
     Bitboard bPawnDoublePush(const Bitboard empty) const;
     Bitboard bPawnAttacks(const Bitboard wPieces) const;
 
-    Bitboard knightAttacks() const;
+    Bitboard knightAttacks(const Bitboard samePieces) const;
 
     Bitboard bishopAttacks() const;
 

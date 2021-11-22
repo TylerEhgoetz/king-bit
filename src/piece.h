@@ -15,6 +15,8 @@ const int NUM_PIECES = 13;
 
 const int MAX_ON_BOARD = 10;
 
+const Color OppositeColor[] { BLACK, WHITE };
+
 const int PieceVal[NUM_PIECES] = {
     0,
     100, 325, 325, 550, 1000, 9999,
@@ -57,8 +59,6 @@ inline Color stringToColor(std::string color) {
     return c;
 }
 
-inline bool isPawn(Piece p) {
-    return p == wP || p == bP;
-}
+inline bool isPawn(Piece p) { return p == wP || p == bP; }
 
 #endif

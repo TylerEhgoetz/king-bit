@@ -39,6 +39,8 @@ Bitboard::Bitboard(std::bitset<CHESS_SQ_NUM> bitset) : bits{bitset} {}
 
 bool Bitboard::operator==(const Bitboard &bb) const { return bits == bb.bits; }
 
+bool Bitboard::operator!=(const Bitboard &bb) const { return bits != bb.bits; }
+
 void Bitboard::set(int bit) { bits[bit] = 1; }
 
 void Bitboard::clear(int bit) { bits[bit] = 0; }
@@ -94,7 +96,7 @@ Bitboard Bitboard::bPawnAttacks(const Bitboard wPieces) const {
     return(attacks & wPieces.getBits());
 }
 
-Bitboard Bitboard::knightAttacks() const { 
+Bitboard Bitboard::knightAttacks(const Bitboard samePieces) const { 
     chess_bits noNoWe = north(north(west(bits)));
     chess_bits noNoEa = north(north(east(bits)));
     chess_bits eaEaNo = east(east(north(bits)));
@@ -103,7 +105,8 @@ Bitboard Bitboard::knightAttacks() const {
     chess_bits soSoWe = south(south(west(bits)));
     chess_bits weWeSo = west(west(south(bits)));
     chess_bits weWeNo = west(west(north(bits)));
-    return Bitboard{noNoWe | noNoEa | eaEaNo | eaEaSo | soSoEa | soSoWe | weWeNo | weWeSo};
+    chess_bits valid_dests = samePieces.flip().getBits();
+    return Bitboard{(noNoWe | noNoEa | eaEaNo | eaEaSo | soSoEa | soSoWe | weWeNo | weWeSo) & valid_dests};
 }
 
 Bitboard Bitboard::bishopAttacks() const { return EMPTY_BB; }
