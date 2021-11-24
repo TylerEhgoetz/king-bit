@@ -17,8 +17,7 @@ void TextDisplay::notify() {
                 --rank;
             }
             char p = game->getPiece(Square(i));
-            if ((p == ' ' && rank % 2 == 0 && i % 2 == 1) ||
-            (p == ' ' && rank % 2 == 1 && i % 2 == 0)) {
+            if (p == ' ' && (rank % 2 == 0 && i % 2 == 0) || (rank % 2 == 1 && i % 2 == 1)) {
                 out << '_';
             } else {
                 out << p;

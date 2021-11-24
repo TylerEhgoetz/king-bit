@@ -45,15 +45,25 @@ inline bool isValidPiece(Piece p) {
     return !(p == EMPTY || p == OFFBOARD);
 }
 
-inline Piece charToPiece(char piece, Color color) {
-    return EMPTY; // TODO: change to real piece value when finished
+inline bool isValidColor(Color c) {
+    // Produces true if the color is not BOTH
+    return !(c == BOTH);
+}
+
+inline Piece charToPiece(char piece) {
+    int char_index = 0;
+    for (int i = 0; i < NUM_PIECES + 1; ++i) {
+        if (PieceChar[i] == piece) char_index = i;
+    }
+    assert(isValidPiece(Piece(char_index)));
+    return Piece(char_index);
 }
 
 inline Color stringToColor(std::string color) {
     Color c;
     if (color == "white") c = WHITE;
     if (color == "black") c = BLACK;
-    assert(c == WHITE || c == BLACK);
+    assert(isValidColor(c));
     return c;
 }
 

@@ -4,21 +4,15 @@
 #include <string>
 #include <iostream>
 
-void Game::placePiece(Piece piece, Square square) {
-    p.placePiece(piece, square);
-}
+void Game::placePiece(Piece piece, Square square) { p.placePiece(piece, square); }
 
-void Game::removePiece(Square square) {
-    p.removePiece(square);
-}
+void Game::removePiece(Square square) { p.removePiece(square); }
 
-void Game::setColour(Color colour) {
-    // TODO: call position setColour once created
-}
+void Game::setColour(Color color) { p.setSideToMove(color); }
 
-Color Game::getColor() const { return p.getSideToMove();}
+Color Game::getColor() const { return p.getSideToMove(); }
 
-char Game::getPiece(Square s) { return PieceChar[p.getPiece(s)];}
+char Game::getPiece(Square s) { return PieceChar[p.getPiece(s)]; }
 
 void Game::enterSetupMode() {
     std::string command;
@@ -27,7 +21,7 @@ void Game::enterSetupMode() {
             char piece;
             std::string square;
             std::cin >> piece >> square;
-            placePiece(charToPiece(piece, getColor()), stringToSquare120(square));
+            placePiece(charToPiece(piece), stringToSquare120(square));
             notifyObservers();
         } else if (command == "-") {
             std::string square;
