@@ -46,18 +46,18 @@ const std::bitset<4> CAPTURES{"0100"};
 const std::bitset<4> EN_PASSANT{"0101"};
 
 // Move generation helper functions
-void Position::addPawnMovesFrom(Square src, Color col, std::vector<Position::Move> &moves) const {
+void Position::addPawnMovesFrom(Square src, std::vector<Position::Move> &moves) const {
     assert(isValidSquare(src));                 // Valid square
-    assert(PieceColor[squareList[src]] == col); // Color matches
     assert(isPawn(squareList[src]));            // Is pawn
     // Get pawn move methods for the right color
+    Color col = PieceColor[squareList[src]];
     auto pawnSinglePush = (col == WHITE) ? &Bitboard::wPawnSinglePush : &Bitboard::bPawnSinglePush;
     auto pawnDoublePush = (col == WHITE) ? &Bitboard::wPawnDoublePush : &Bitboard::bPawnDoublePush;
     auto pawnAttacks = (col == WHITE) ? &Bitboard::wPawnAttacks : &Bitboard::bPawnAttacks;
     Color opposingColor = OppositeColor[col];
     Bitboard opposingPieces = getBitboardOfColor(opposingColor);
     Bitboard pawn{square120to64(src)};
-    // Add valid pushes to move vector
+    // Add valid pushes 
     Bitboard singlePush = (pawn.*pawnSinglePush)(bbs[EMPTY]);
     Bitboard doublePush = (pawn.*pawnDoublePush)(bbs[EMPTY]);
     if (singlePush.count()) {
@@ -70,7 +70,7 @@ void Position::addPawnMovesFrom(Square src, Color col, std::vector<Position::Mov
             moves.emplace_back(src, dest, DOUBLE_PAWN_PUSH, EMPTY);
         }
     } 
-    // Add valid attacks to move vector
+    // Add valid attacks 
     Square enPass = getEnPassSquare();
     // Add a pseudo opposing piece on the en passant square, if it exists
     if (enPass != NO_SQ) opposingPieces.set(square120to64(enPass));
@@ -87,18 +87,25 @@ void Position::addPawnMovesFrom(Square src, Color col, std::vector<Position::Mov
     }
 }
 
-void addKnightAttacks(Square src, Color col, Position *p, std::vector<Position::Move> &moves) {
-    assert(isValidSquare(src));
-    assert(col == WHITE || col == BLACK);
-    Bitboard knight{square120to64(src)};
-    Bitboard samePieces = p->getBitboardOfColor(col);
-    Bitboard attacks = knight.knightAttacks(samePieces);
+void Position::addPieceMovesFrom(Square src, std::vector<Position::Move> &moves) const {
+    Piece p = squareList[src];
+    auto moveFunc = (isKnight(p)) ? &Bitboard::knightAttacks :
+                    (isBishop(p)) ? &Bitboard::bishopAttacks :
+                    (isRook(p)) ? &Bitboard::rookAttacks :
+                    (isQueen(p)) ? &Bitboard::queenAttacks : &Bitboard::kingAttacks;
+    Color col = PieceColor[p];
+    Bitboard piece{square120to64(src)};
+    Bitboard occupied = bbs[EMPTY].flip();
+    Bitboard attacks = (piece.*moveFunc)(occupied);
     while (attacks != EMPTY_BB) {
         Square dest = square64to120(attacks.pop());
-        assert(PieceColor[p->getPiece(dest)] == OppositeColor[col] || !p->getPiece(dest));
-        if (!p->getPiece(dest)) moves.emplace_back(src, dest, QUIET, EMPTY);
-        else moves.emplace_back(src, dest, CAPTURES, p->getPiece(dest));
-    }
+        Piece captured = getPiece(dest);
+        if (captured == EMPTY) {
+            moves.emplace_back(src, dest, QUIET, EMPTY);
+        } else if (PieceColor[captured] == OppositeColor[col]) {
+            moves.emplace_back(src, dest, CAPTURES, captured);
+        }
+    } 
 }
 
 // Position implementation
@@ -170,56 +177,46 @@ int Position::removePiece(Square s) {
     return p;
 }
 
+void Position::makeMove(Position::Move move) {
+    Piece moving = squareList[move.from];
+    Piece captured = squareList[move.to];
+    assert(captured == move.piece_captured);
+    if (captured != EMPTY) removePiece(move.to);
+    removePiece(move.from);
+    placePiece(moving, move.to);
+}
+
 std::vector<Position::Move> Position::generateMoves() {
     std::vector<Position::Move> moves;
     for (int piece = wP; piece < OFFBOARD; ++piece) {
         for (int j = 0; j < pieceList[piece].count; ++j) {
             Square sq120 = Square(pieceList[piece].squares[j]);
             assert(piece == squareList[sq120]);
-            switch (piece) {
-                case wP: {
-                    addPawnMovesFrom(sq120, WHITE, moves);
-                    break;
-                }
-                case wN: {
-                    addKnightAttacks(sq120, WHITE, this, moves); 
-                    break;
-                }
-                case wB: {
-                }
-                case wR: {
-                }
-                case wQ: {
-                }
-                case wK: {
-                }
-                case bP: {
-                }
-                case bN: {
-                }
-                case bB: {
-                }
-                case bQ: {
-                }
-                case bK: {
-                }
-                default: {
-                }
-            }
+            if (isPawn(Piece(piece))) addPawnMovesFrom(sq120, moves);
+            else addPieceMovesFrom(sq120, moves);
         }
     }
     return moves;
 }
 
 std::ostream &operator<<(std::ostream &out, const Position &p) {
+    /*
     out << "Square List:" << std::endl;
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
         if (isValidSquare(Square(i))) {
             out << std::setw(4) << p.squareList[i];
             if (squareToFile(Square(i)) == FILE_H) out << std::endl;
         }
+    }*/
+    for (int i = 56; i >= 0; i -= 8) {
+        for (int j = 0; j < 8; ++j) {
+            Square s = square64to120(i + j);
+            out << std::setw(4) << p.squareList[s];
+        }
+        out << std::endl;
     }
     out << std::endl;
+    /*
     for (int i = 0; i < NUM_PIECES + 1; ++i) {
         if (p.bbs[i].count()) {
             out << "Piece type " << i << ":" << std::endl;
@@ -232,5 +229,11 @@ std::ostream &operator<<(std::ostream &out, const Position &p) {
             out << p.bbs[i];
         }
     }
+    */
+    return out;
+}
+
+std::ostream &operator<<(std::ostream &out, const Position::Move &move) {
+    out << "From " << squareToString(move.from) << " to " << squareToString(move.to) << std::endl;
     return out;
 }

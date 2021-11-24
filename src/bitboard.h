@@ -41,15 +41,15 @@ class Bitboard {
     Bitboard bPawnDoublePush(const Bitboard empty) const;
     Bitboard bPawnAttacks(const Bitboard wPieces) const;
 
-    Bitboard knightAttacks(const Bitboard samePieces) const;
+    Bitboard knightAttacks(const Bitboard occupied) const;
 
-    Bitboard bishopAttacks() const;
+    Bitboard bishopAttacks(const Bitboard occupied) const;
 
-    Bitboard rookAttacks() const;
+    Bitboard rookAttacks(const Bitboard occupied) const;
 
-    Bitboard queenAttacks() const;
+    Bitboard queenAttacks(const Bitboard occupied) const;
 
-    Bitboard kingAttacks() const;
+    Bitboard kingAttacks(const Bitboard occupied) const;
 
     // friends
     friend std::ostream &operator<<(std::ostream &, const Bitboard &);

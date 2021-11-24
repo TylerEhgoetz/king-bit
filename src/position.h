@@ -59,11 +59,16 @@ class Position {
     //  * the piece occupying the square is not EMPTY of OFFBOARD
     int removePiece(Square);
 
+    // makeMove executed the given move on the current position
+    // Requires: the given move is valid from the current position
+    void makeMove(Move);
+
     // generateMoves produces a vector of all possible legal moves from the current position
     std::vector<Move> generateMoves();
 
     // Prints the pieces on each valid square
     friend std::ostream &operator<<(std::ostream &, const Position &);
+    friend std::ostream &operator<<(std::ostream &, const Move &);
 
   private:
     // There is one Bitboard for each piece type, plus one extra for all pawns
@@ -72,8 +77,9 @@ class Position {
     Piece squareList[BOARD_SQ_NUM];
     MetaData metadata;
 
-    // These methods are used for move generation
-    void addPawnMovesFrom(Square, Color, std::vector<Move> &) const;
+    // These methods are used for move generation, and DO NOT CONSIDER CHECKS
+    void  addPawnMovesFrom(Square, std::vector<Move> &) const;
+    void addPieceMovesFrom(Square, std::vector<Move> &) const;
 };
 
 #endif

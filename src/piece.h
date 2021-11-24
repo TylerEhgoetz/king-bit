@@ -23,7 +23,7 @@ const int PieceVal[NUM_PIECES] = {
     100, 325, 325, 550, 1000, 9999
 };
 
-const int PieceColor[NUM_PIECES] = {
+const Color PieceColor[NUM_PIECES] = {
     BOTH,
     WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
     BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
@@ -60,5 +60,15 @@ inline Color stringToColor(std::string color) {
 }
 
 inline bool isPawn(Piece p) { return p == wP || p == bP; }
+
+inline bool isKnight(Piece p) { return p == wN || p == bN; }
+
+inline bool isBishop(Piece p) { return p == wB || p == bB; }
+
+inline bool isRook(Piece p) { return p == wR || p == bR; }
+
+inline bool isQueen(Piece p) { return p == wQ || p == bQ; }
+
+inline bool isKing(Piece p) { return p == wK || p == bK; }
 
 #endif
