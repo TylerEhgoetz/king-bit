@@ -8,8 +8,6 @@ TextDisplay::~TextDisplay() {
     game->detach(this);
 }
 
-// Needed method:
-// getPiece(int) gets the piece at 120 int representation
 void TextDisplay::notify() {
     int rank = 8;
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
@@ -18,15 +16,15 @@ void TextDisplay::notify() {
                 out << rank << ' ';
                 --rank;
             }
-            /*char p = game->getPiece(i);
-            if ((p == ' ' && rank % 2 == 0 && i % 2 == 0) ||
-            (p == ' ' && rank % 2 == 1 && i % 2 != 0)) {
+            char p = game->getPiece(Square(i));
+            if ((p == ' ' && rank % 2 == 0 && i % 2 == 1) ||
+            (p == ' ' && rank % 2 == 1 && i % 2 == 0)) {
                 out << '_';
             } else {
                 out << p;
-            }*/
-            out << '_';
+            }
             if (squareToFile(Square(i)) == FILE_H) out << std::endl;
         }
     }
+    out << std:: endl;
 }

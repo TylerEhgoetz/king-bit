@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++14 -MMD -g
-OBJECTS=local_main.o position.o bitboard.o 
+OBJECTS=bitboard.o debugDisplay.o game.o main.o position.o subject.o textDisplay.o
 DEPENDS=${OBJECTS:.o=.d}
 EXEC=kingbit
 
