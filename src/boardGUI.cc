@@ -40,7 +40,7 @@ void BoardGUI::notify() {
     for (int i = 0; i < BOARD_SQ_NUM; ++i) {
         if (isValidSquare(Square(i))) {
             if (squareToFile(Square(i)) == FILE_A) {
-                w.drawString(rank_x, rank_y, std::to_string(i));
+                w.drawString(rank_x, rank_y, std::to_string(rank));
                 rank_y += RANK_INCREMENT;
                 --rank;
             }
